@@ -4,17 +4,9 @@
 var $ = tinyLib;
 var doc = document;
 var body = doc.body;
-console.log('hello');
 
 var defaultClass = 'criterie-item';
-var classHidden = defaultClass + '--hidden';
-var classYes = defaultClass + '--yes';
-var classNo = defaultClass + '--no';
-
 var checkItems = $.get('.' + defaultClass);
-
-// console.log( checkItems );
-
 
 //---------------------------------------------
 
@@ -35,7 +27,6 @@ chrome.runtime.onMessage.addListener(
   }
 
 });
-
 
 //---------------------------------------------
 
@@ -102,6 +93,8 @@ checkItem.prototype.checkState = function () {
   this.textField = this.elemSet.elem.querySelector('.form-control');
   this.prevText = this.elemSet.elem.querySelector('.text-muted');
 
+  this.addLinksToText();
+
   if ( this.checkBox.checked ) {
     this.dataSet.state = 'yes';
     this.dataSet.isOpen = 'false';
@@ -133,9 +126,18 @@ checkItem.prototype.checkState = function () {
 
 };
 
+//---------------------------------------------
 
+checkItem.prototype.addLinksToText = function () {
+  if ( !this.prevText ) {
+    return;
+  }
+  var text = this.prevText.innerHTML;
+  var pattern = /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/gm;
+
+  this.prevText.innerHTML = text.replace( pattern, '<a href="$&">$&</a>');
+};
+
+// ------------------------------------------
 
 init();
-
-// Functions
-// ------------------------------------------

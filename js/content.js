@@ -7,6 +7,11 @@ var body = doc.body;
 
 var defaultClass = 'criterie-item';
 var checkItems = $.get('.' + defaultClass);
+var itemsCounter = 0;
+var attentionList = {};
+var attentionListContent = $.create('div').addClass('attention-list__content');
+
+var attentionListElem = null;
 
 //---------------------------------------------
 
@@ -50,8 +55,20 @@ function checkItem( critItem ) {
 //---------------------------------------------
 
 checkItem.prototype.init = function () {
+  this.id = 'crit-' + itemsCounter++;
+  this.elemSet.attr({id: this.id});
+
+  this.getCritNum();
   this.addButton();
   this.checkState();
+};
+
+//---------------------------------------------
+
+checkItem.prototype.getCritNum = function () {
+  var labelElem = this.elemSet.elem.querySelector('label');
+  var labelText = labelElem.innerText;
+  this.critNum = labelText.match(/\S\d{1,}\b/);
 };
 
 //---------------------------------------------
@@ -63,8 +80,8 @@ checkItem.prototype.addButton = function () {
   col.classList.add( defaultClass + '__buttons')
 
   critItem.button = $.create('button')
-          .addClass(defaultClass + '__button')
-          .attr({'type': 'button'});
+                    .addClass(defaultClass + '__button')
+                    .attr({'type': 'button'});
 
   col.insertBefore( critItem.button.elem, col.firstChild );
 
@@ -95,36 +112,74 @@ checkItem.prototype.checkState = function () {
 
   this.addLinksToText();
 
+  this.changeState( 'load' );
+
+  this.checkBox.onchange = function () {
+    that.changeState( 'change' );
+    printAttentionList();
+  };
+  this.textField.oninput = function () {
+    that.changeState( 'change' );
+    printAttentionList();
+  };
+  this.textField.onkeyup = function () {
+    that.changeState( 'change' );
+    printAttentionList();
+  };
+};
+
+//---------------------------------------------
+
+checkItem.prototype.changeState = function ( evt ) {
   if ( this.checkBox.checked ) {
     this.dataSet.state = 'yes';
-    this.dataSet.isOpen = 'false';
+
+    if ( evt === 'load' ) {
+      this.dataSet.isOpen = 'false';
+    }
   }
   else if ( this.textField.value !== '' || this.prevText ) {
     this.dataSet.state = 'no';
   }
+  else {
+    this.dataSet.state = '';
+  }
 
-  this.checkBox.onchange = function () {
-    if ( this.checked ) {
-      that.dataSet.state = 'yes';
-    }
-    else {
-      that.dataSet.state = 'no';
-    }
-  };
-
-  this.textField.onchange = function () {
-    console.log( 'change' );
-    if ( this.value !== '') {
-      if ( !this.checkBox.checked ) {
-        that.dataSet.state = 'no';
-      }
-    }
-    else {
-      that.dataSet.state = 'yes';
-    }
-  };
-
+  this.collectAttentionItems();
 };
+
+//---------------------------------------------
+
+checkItem.prototype.collectAttentionItems = function () {
+  if ( this.dataSet.state === 'no') {
+    attentionList[ this.id ] = this.critNum;
+  }
+  else if ( attentionList[ this.id ] ) {
+    delete attentionList[ this.id ];
+  }
+}
+
+//---------------------------------------------
+
+function printAttentionList () {
+  return;
+
+  // Switched off
+  var critIds = Object.keys( attentionList );
+
+  var newAttentionListContent = $.create('div').addClass('attention-list__content');
+
+  critIds.forEach( function ( item ) {
+
+    var link = $.create('a').attr({'href': '#' + item}).html( attentionList[ item ] );
+
+    newAttentionListContent.append( link );
+  });
+
+  attentionListContent = attentionListElem.elem.replaceChild(newAttentionListContent.elem, attentionListContent.elem);
+
+  // attentionListElem.append( attentionListContent );
+}
 
 //---------------------------------------------
 

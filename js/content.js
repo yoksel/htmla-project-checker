@@ -7,10 +7,10 @@ var body = doc.body;
 
 var defaultClass = 'criterie-item';
 var checkItems = $.get('.' + defaultClass);
+var checkItemsIndex = {};
 var itemsCounter = 0;
 var attentionList = {};
-var attentionListContent = $.create('div').addClass('attention-list__content');
-
+var attentionListContent = null;
 var attentionListElem = null;
 
 //---------------------------------------------
@@ -30,16 +30,20 @@ chrome.runtime.onMessage.addListener(
 
     sendResponse({farewell: "Set current maket"});
   }
-
 });
 
 //---------------------------------------------
 
 function init() {
+
   checkItems.forEach(function ( item ) {
     var newCheckItem = new checkItem( item );
     newCheckItem.init();
   });
+
+  attentionListElem = $.create('div').addClass('attention-list');
+  body.appendChild( attentionListElem.elem );
+  printAttentionList();
 }
 
 //---------------------------------------------
@@ -47,7 +51,6 @@ function init() {
 function checkItem( critItem ) {
   this.elemSet = critItem;
   this.dataSet = this.elemSet.elem.dataset;
-
   this.dataSet.state = '';
   this.dataSet.isOpen = 'true';
 };
@@ -58,18 +61,23 @@ checkItem.prototype.init = function () {
   this.id = 'crit-' + itemsCounter++;
   this.elemSet.attr({id: this.id});
 
-  this.getCritNum();
+  this.addToIndex();
   this.addButton();
   this.checkState();
 };
 
 //---------------------------------------------
 
-checkItem.prototype.getCritNum = function () {
+checkItem.prototype.addToIndex = function () {
   var labelElem = this.elemSet.elem.querySelector('label');
   var labelText = labelElem.innerText;
-  this.critNum = labelText.match(/\S\d{1,}\b/);
-};
+  var critNum = labelText.match(/\S\d{1,}\b/);
+
+  checkItemsIndex[ this.id ] = {
+    'num': critNum,
+    'labelText': labelText
+  };
+}
 
 //---------------------------------------------
 
@@ -145,14 +153,14 @@ checkItem.prototype.changeState = function ( evt ) {
     this.dataSet.state = '';
   }
 
-  this.collectAttentionItems();
+  this.addToAttentionItems();
 };
 
 //---------------------------------------------
 
-checkItem.prototype.collectAttentionItems = function () {
+checkItem.prototype.addToAttentionItems = function () {
   if ( this.dataSet.state === 'no') {
-    attentionList[ this.id ] = this.critNum;
+    attentionList[ this.id ] = this.id;
   }
   else if ( attentionList[ this.id ] ) {
     delete attentionList[ this.id ];
@@ -162,24 +170,28 @@ checkItem.prototype.collectAttentionItems = function () {
 //---------------------------------------------
 
 function printAttentionList () {
-  return;
+  var critIds = Object.keys( attentionList ).sort( sortIds );
 
-  // Switched off
-  var critIds = Object.keys( attentionList );
+  if ( attentionListContent ) {
+    attentionListContent.elem.parentNode.removeChild( attentionListContent.elem );
+  }
 
-  var newAttentionListContent = $.create('div').addClass('attention-list__content');
+  if ( critIds.length === 0 ) {
+    return;
+  }
+
+  attentionListContent = $.create('div').addClass('attention-list__content');
 
   critIds.forEach( function ( item ) {
+    var linkText = checkItemsIndex[ item ].num;
+    var linkTitle = checkItemsIndex[ item ].labelText;
 
-    var link = $.create('a').attr({'href': '#' + item}).html( attentionList[ item ] );
-
-    newAttentionListContent.append( link );
+    var link = $.create('a').attr({'href': '#' + item, 'title': linkTitle}).html( linkText );
+    attentionListContent.append( link );
   });
 
-  attentionListContent = attentionListElem.elem.replaceChild(newAttentionListContent.elem, attentionListContent.elem);
-
-  // attentionListElem.append( attentionListContent );
-}
+  attentionListElem.append( attentionListContent );
+};
 
 //---------------------------------------------
 
@@ -194,5 +206,13 @@ checkItem.prototype.addLinksToText = function () {
 };
 
 // ------------------------------------------
+
+function sortIds( a, b ) {
+  var aNum = parseInt(a.slice(5), 10);
+  var bNum = parseInt(b.slice(5), 10);
+  return aNum > bNum ? 1 : -1;
+}
+
+//---------------------------------------------
 
 init();

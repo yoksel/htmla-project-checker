@@ -14,7 +14,7 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://up.htmlacademy.ru/adaptive/*/*"],
+      "matches": ["https://up.htmlacademy.ru/adaptive/*/check/projects/*"],
       "css": ["css/content.css"],
       "js": ["js/defaults.js","js/tinylib.js","js/content.js"]
     }

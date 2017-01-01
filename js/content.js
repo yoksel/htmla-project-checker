@@ -4,6 +4,7 @@
 var $ = tinyLib;
 var doc = document;
 var body = doc.body;
+var pageContent = $.get('.page-content');
 
 var defaultClass = 'criterie-item';
 var checkItems = $.get('.' + defaultClass);
@@ -172,15 +173,17 @@ checkItem.prototype.addToAttentionItems = function () {
 function printAttentionList () {
   var critIds = Object.keys( attentionList ).sort( sortIds );
 
-  if ( attentionListContent ) {
+  if ( attentionListContent && attentionListContent.elem.parentNode ) {
     attentionListContent.elem.parentNode.removeChild( attentionListContent.elem );
   }
 
   if ( critIds.length === 0 ) {
+    delete pageContent.elem.dataset[ 'hasAttenttionList' ];
     return;
   }
 
   attentionListContent = $.create('div').addClass('attention-list__content');
+  pageContent.elem.dataset[ 'hasAttenttionList' ] = '';
 
   critIds.forEach( function ( item ) {
     var linkText = checkItemsIndex[ item ].num;

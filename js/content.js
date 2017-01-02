@@ -14,6 +14,13 @@ var attentionList = {};
 var attentionListContent = null;
 var attentionListElem = null;
 
+//Parse string to boolean
+var localHtmlaCheckerState = JSON.parse(localStorage.htmlaCheckerState);
+
+var currents = {
+  htmlaCheckerState: localStorage.htmlaCheckerState ? localHtmlaCheckerState : htmlaStatesList[0]
+};
+
 //---------------------------------------------
 
 chrome.runtime.onMessage.addListener(
@@ -23,13 +30,14 @@ chrome.runtime.onMessage.addListener(
   if ( request.getCurrents ) {
     sendResponse({ currents: currents });
   }
-  else if (request.setBodyClass ) {
-    itemName = 'maket';
+  else if (request.changeExtnState ) {
+    itemName = 'htmlaCheckerState';
 
-    currents[itemName] = request.setBodyClass[ itemName ];
+    currents[itemName] = !currents[itemName];
     localStorage[itemName] = currents[itemName];
+    changeExtnState();
 
-    sendResponse({farewell: "Set current maket"});
+    sendResponse({ state: currents[itemName] });
   }
 });
 
@@ -45,8 +53,19 @@ function init() {
   attentionListElem = $.create('div').addClass('attention-list');
   body.appendChild( attentionListElem.elem );
   printAttentionList();
+  changeExtnState();
 }
 
+//---------------------------------------------
+
+function changeExtnState() {
+  if ( currents.htmlaCheckerState ) {
+    body.classList.add( 'htmla-project-checker' );
+  }
+  else {
+    body.classList.remove( 'htmla-project-checker' );
+  }
+}
 //---------------------------------------------
 
 function checkItem( critItem ) {
@@ -64,7 +83,7 @@ checkItem.prototype.init = function () {
 
   this.addToIndex();
   this.addButton();
-  this.checkState();
+  this.checkItemState();
 };
 
 //---------------------------------------------
@@ -112,7 +131,7 @@ checkItem.prototype.toggleVisibility = function () {
 
 //---------------------------------------------
 
-checkItem.prototype.checkState = function () {
+checkItem.prototype.checkItemState = function () {
   var that = this;
 
   this.checkBox = this.elemSet.elem.querySelector('[type=checkbox]');
@@ -121,25 +140,25 @@ checkItem.prototype.checkState = function () {
 
   this.addLinksToText();
 
-  this.changeState( 'load' );
+  this.changeItemState( 'load' );
 
   this.checkBox.onchange = function () {
-    that.changeState( 'change' );
+    that.changeItemState( 'change' );
     printAttentionList();
   };
   this.textField.oninput = function () {
-    that.changeState( 'change' );
+    that.changeItemState( 'change' );
     printAttentionList();
   };
   this.textField.onkeyup = function () {
-    that.changeState( 'change' );
+    that.changeItemState( 'change' );
     printAttentionList();
   };
 };
 
 //---------------------------------------------
 
-checkItem.prototype.changeState = function ( evt ) {
+checkItem.prototype.changeItemState = function ( evt ) {
   if ( this.checkBox.checked ) {
     this.dataSet.state = 'yes';
 

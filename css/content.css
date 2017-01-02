@@ -1,36 +1,47 @@
-.criterie-item {
+/* CRITERIE ITEM
+---------------------------------*/
+
+.htmla-project-checker .criterie-item {
   position: relative;
   padding: .5rem .5rem 0;
   margin-bottom: 1rem;
   border-radius: 10px;
   border: 3px solid rgba(0,0,0,.2);
-  transition: all .5s;
+  transition: all .25s;
 }
 
 @media ( max-width: 850px ) {
 
-.page-content[data-has-attenttion-list] .criterie-item {
+.htmla-project-checker .page-content[data-has-attenttion-list] .criterie-item {
     margin-right: 45px;
   }
 }
 @media ( max-width: 760px ) {
-  ..page-content[data-has-attenttion-list] .criterie-item {
+  .htmla-project-checker .page-content[data-has-attenttion-list] .criterie-item {
     margin-right: 0;
   }
 }
 @media ( max-width: 720px ) {
-  .page-content[data-has-attenttion-list] .criterie-item {
+  .htmla-project-checker .page-content[data-has-attenttion-list] .criterie-item {
     margin-right: 45px;
   }
 }
 
-.criterie-item .row {
+.htmla-project-checker .criterie-item .row {
   flex-wrap: nowrap;
   justify-content: space-between;
 }
 
-/* Increase specifity */
-.criterie-item .criterie-item__buttons {
+.htmla-project-checker .criterie-item INPUT[type="checkbox"] {
+  background: rgba(0,0,0,.2);
+  box-shadow: 0 1px 0 3px rgba(0,0,0,.3);
+  border-radius: 2px;
+}
+
+/* CRITERIE BUTTONS
+---------------------------------*/
+
+.htmla-project-checker .criterie-item__buttons {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -42,15 +53,19 @@
 }
 
 @media ( min-width: 650px ) {
-  .criterie-item__buttons {
+  .htmla-project-checker .criterie-item__buttons {
     min-width: 80px;
     flex-grow: 1;
     flex-wrap: nowrap;
     justify-content: space-between;
   }
 }
-
 .criterie-item__button {
+  display: none;
+}
+
+.htmla-project-checker .criterie-item__button {
+  display: block;
   width: 28px;
   height: 28px;
   border: 0px;
@@ -67,41 +82,49 @@
 }
 
 @media ( min-width: 650px ) {
-  .criterie-item__button {
+  .htmla-project-checker .criterie-item__button {
     order: 2;
     margin-bottom: 0;
     margin-left: 10px;
   }
 }
 
-.criterie-item[data-is-open="false"] .criterie-item__button {
+.htmla-project-checker .criterie-item[data-is-open="false"] .criterie-item__button {
   background-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='200 200 200 200'%3E%3Cpolygon fill='rgba(0,0,0,.2)' points='320 280 320 200 280 200 280 280 200 280 200 320 280 320 280 400 320 400 320 320 400 320 400 280'%3E%3C/polygon%3E%3C/svg%3E");
 }
 
-.criterie-item[data-is-open="false"] .form-group {
+.htmla-project-checker .criterie-item[data-is-open="false"] .form-group {
   display: none;
 }
 
-.criterie-item[data-state="yes"] {
+.htmla-project-checker .criterie-item[data-state="yes"] {
   background: hsl(90,100%,80%);
 }
 
-.criterie-item[data-state="no"] {
+.htmla-project-checker .criterie-item[data-state="no"] {
   background: hsl(20,100%,90%);
 }
 
-.criterie-item .text-muted {
+.htmla-project-checker .criterie-item .text-muted {
   color: rgba(0,0,0,.65);
 }
 
-.attention-list {
+/* ATTENTION LIST
+---------------------------------*/
+
+.attention-list  {
+  display: none;
+}
+
+.htmla-project-checker .attention-list {
   position: fixed;
+  display: block;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.attention-list__content {
+.htmla-project-checker .attention-list__content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -114,7 +137,7 @@
   box-shadow: 0 0px 5px rgba(0,0,0,0.25);
 }
 
-.attention-list A {
+.htmla-project-checker .attention-list A {
   margin: 3px 0;
   border-bottom: 1px dotted;
   line-height: 1.2;
@@ -122,6 +145,6 @@
   color: crimson;
 }
 
-.attention-list A:hover {
+.htmla-project-checker .attention-list A:hover {
   text-decoration: none;
 }

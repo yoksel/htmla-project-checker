@@ -15,7 +15,7 @@ var attentionListContent = null;
 var attentionListElem = null;
 
 //Parse string to boolean
-var localHtmlaCheckerState = JSON.parse(localStorage.htmlaCheckerState);
+var localHtmlaCheckerState = localStorage.htmlaCheckerState? JSON.parse(localStorage.htmlaCheckerState) : false;
 
 var currents = {
   htmlaCheckerState: localStorage.htmlaCheckerState ? localHtmlaCheckerState : htmlaStatesList[0]
@@ -104,7 +104,7 @@ checkItem.prototype.addToIndex = function () {
 checkItem.prototype.addButton = function () {
   var critItem = this.elemSet;
   var that = this;
-  var col = critItem.elem.querySelector('.col-xs-1');
+  var col = critItem.elem.querySelector('td:nth-child(2)');
   col.classList.add( defaultClass + '__buttons')
 
   critItem.button = $.create('button')

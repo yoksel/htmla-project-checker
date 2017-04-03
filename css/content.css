@@ -1,9 +1,14 @@
 /* CRITERIE ITEM
 ---------------------------------*/
-.htmla-project-checker .table td,
-.htmla-project-checker .table th {
+.htmla-project-checker .table TD,
+.htmla-project-checker .table TH {
   padding: .5rem;
 }
+
+.htmla-project-checker .table TD:first-child {
+  flex-grow: 1;
+}
+
 
 .htmla-project-checker .table-info {
   display: block;

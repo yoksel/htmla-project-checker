@@ -224,7 +224,7 @@ checkItem.prototype.addLinksToText = function () {
   var text = this.prevText.innerHTML;
   var pattern = /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/gm;
 
-  this.prevText.innerHTML = text.replace( pattern, '<a href="$&">$&</a>');
+  this.prevText.innerHTML = text.replace( pattern, '<a href="$&" target="_blank">$&</a>');
 };
 
 // ------------------------------------------
